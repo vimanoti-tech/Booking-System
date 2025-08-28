@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { User, Mail, Lock, UserPlus, LogIn } from 'lucide-react';
+import { User, Mail, Lock, UserPlus, LogIn, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
+// Organization email domains - update these with your actual domains
+const ALLOWED_DOMAINS = ['yourcompany.com', 'yourdomain.org'];
+
+const isOrganizationEmail = (email: string): boolean => {
+  const domain = email.split('@')[1]?.toLowerCase();
+  return ALLOWED_DOMAINS.includes(domain);
+};
 export function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
@@ -15,6 +23,13 @@ export function AuthForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if email is from organization domain
+    if (!isOrganizationEmail(formData.email)) {
+      toast.error('Access restricted to organization emails only');
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -39,13 +54,24 @@ export function AuthForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4">
+      {/* Back to Booking Link */}
+      <div className="fixed top-4 left-4 z-10">
+        <Link
+          to="/"
+          className="flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm text-gray-700 hover:text-gray-900 hover:bg-white rounded-lg shadow-md transition-all"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Booking
+        </Link>
+      </div>
+
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {isLogin ? 'Welcome Back' : 'Create Account'}
+            {isLogin ? 'Admin Login' : 'Create Admin Account'}
           </h1>
           <p className="text-gray-600">
-            {isLogin ? 'Sign in to your account' : 'Join our booking system'}
+            {isLogin ? 'Sign in to admin dashboard' : 'Create admin account (organization emails only)'}
           </p>
         </div>
 
@@ -72,7 +98,7 @@ export function AuthForm() {
             <div>
               <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
                 <Mail className="w-4 h-4 mr-2" />
-                Email Address
+                Organization Email
               </label>
               <input
                 type="email"
@@ -81,8 +107,11 @@ export function AuthForm() {
                 onChange={handleChange}
                 required
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                placeholder="Enter your email"
+                placeholder="Enter your organization email"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Only organization emails ({ALLOWED_DOMAINS.join(', ')}) are allowed
+              </p>
             </div>
 
             <div>
@@ -104,7 +133,7 @@ export function AuthForm() {
             {!isLogin && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Account Type
+                  Admin Role
                 </label>
                 <select
                   name="role"
@@ -112,7 +141,6 @@ export function AuthForm() {
                   onChange={handleChange}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
-                  <option value="client">Client</option>
                   <option value="admin">Admin</option>
                   <option value="super_admin">Super Admin</option>
                 </select>
@@ -129,7 +157,7 @@ export function AuthForm() {
               ) : (
                 <>
                   {isLogin ? <LogIn className="w-5 h-5 mr-2" /> : <UserPlus className="w-5 h-5 mr-2" />}
-                  {isLogin ? 'Sign In' : 'Create Account'}
+                  {isLogin ? 'Sign In to Dashboard' : 'Create Admin Account'}
                 </>
               )}
             </button>
@@ -141,7 +169,7 @@ export function AuthForm() {
               onClick={() => setIsLogin(!isLogin)}
               className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
             >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+              {isLogin ? "Need admin access? Create account" : "Already have admin access? Sign in"}
             </button>
           </div>
         </div>

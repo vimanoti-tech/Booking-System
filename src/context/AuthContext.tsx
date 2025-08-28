@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (data.user) {
       // Create profile
-      const adminColor = role === 'admin' || role === 'super_admin' 
+      const adminColor = role === 'admin' || role === 'super_admin'
         ? `#${Math.floor(Math.random()*16777215).toString(16)}` 
         : undefined;
 
@@ -113,7 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         throw profileError;
       }
 
-      toast.success('Account created successfully!');
+      toast.success('Admin account created successfully!');
     }
   };
 

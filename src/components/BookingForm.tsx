@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Calendar, Clock, MapPin, Package, User, Mail, Phone } from 'lucide-react';
+import { Calendar, Clock, MapPin, Package, User, Mail, Phone, LogIn } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import toast from 'react-hot-toast';
 
@@ -77,6 +78,17 @@ export function BookingForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-12 px-4">
+      {/* Admin Login Link */}
+      <div className="fixed top-4 right-4 z-10">
+        <Link
+          to="/admin-login"
+          className="flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm text-gray-700 hover:text-gray-900 hover:bg-white rounded-lg shadow-md transition-all"
+        >
+          <LogIn className="w-4 h-4 mr-2" />
+          Admin Login
+        </Link>
+      </div>
+
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">Book Your Event</h1>

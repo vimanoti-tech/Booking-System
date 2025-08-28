@@ -23,34 +23,16 @@ function AppRoutes() {
     );
   }
 
-  if (!user) {
-    return <AuthForm />;
-  }
-
-  const getDashboardRoute = () => {
-    switch (user.role) {
-      case 'super_admin':
-        return '/super-admin';
-      case 'admin':
-        return '/admin';
-      default:
-        return '/booking';
-    }
-  };
 
   return (
     <>
-      <Navigation />
+      {user && <Navigation />}
       <Routes>
-        <Route path="/" element={<Navigate to={getDashboardRoute()} replace />} />
+        <Route path="/" element={<BookingForm />} />
         
         <Route
-          path="/booking"
-          element={
-            <ProtectedRoute allowedRoles={['client']}>
-              <BookingForm />
-            </ProtectedRoute>
-          }
+          path="/admin-login"
+          element={!user ? <AuthForm /> : <Navigate to="/admin" replace />}
         />
         
         <Route
@@ -71,7 +53,7 @@ function AppRoutes() {
           }
         />
         
-        <Route path="*" element={<Navigate to={getDashboardRoute()} replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
